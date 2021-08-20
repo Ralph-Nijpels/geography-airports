@@ -16,9 +16,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	application "github.com/ralph-nijpels/geography-application" 
-	// "../countries"
-	// "../datatypes"
+	datatypes "github.com/ralph-nijpels/geography-datatypes"
+	countries "github.com/ralph-nijpels/geography-countries"
 )
+
 
 // Airports is the representation of the collection of Airports in the geography database
 type Airports struct {

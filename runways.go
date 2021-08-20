@@ -11,8 +11,8 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 
-	"../application"
-	"../datatypes"
+	application "github.com/ralph-nijpels/geography-application" 
+	datatypes "github.com/ralph-nijpels/geography-datatypes"
 )
 
 // Runways is the representation of the collection of runways. The runways are implemented
