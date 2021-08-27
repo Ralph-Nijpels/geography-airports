@@ -11,14 +11,14 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 
-	application "github.com/ralph-nijpels/geography-application" 
+	application "github.com/ralph-nijpels/geography-application"
 	datatypes "github.com/ralph-nijpels/geography-datatypes"
 )
 
 // Frequencies is the representation of the collection of frequencies as found in
 // import / export tables
 type Frequencies struct {
-	context *application.Context
+	context *application.AppContext
 	parent  *Airports
 }
 
@@ -29,12 +29,11 @@ type Frequency struct {
 	Frequency     float64 `bson:"frequency-mhz" json:"frequency-mhz"`
 }
 
-
 // NewFrequencies initializes the collection of frequencies
 func (airports *Airports) NewFrequencies() *Frequencies {
 	frequencies := Frequencies{
 		context: airports.context,
-		parent: airports,
+		parent:  airports,
 	}
 	return &frequencies
 }
@@ -68,7 +67,7 @@ func (frequencies *Frequencies) importCSVLine(lineNumber int, line []string) err
 		return fmt.Errorf("Frequencies[%d].AirportCode(%s): %v", lineNumber, line[2], err)
 	}
 
-	frequencyMhz, err := datatypes.Frequency(line[5], false)
+	frequencyMhz, _ := datatypes.Frequency(line[5], false)
 	// build internal representation
 	frequency := Frequency{
 		FrequencyType: line[3],
@@ -95,7 +94,7 @@ func (frequencies *Frequencies) importCSVLine(lineNumber int, line []string) err
 		bson.M{"$set": airport})
 
 	if err != nil {
-		return fmt.Errorf("Frequencies[%d]: %v", lineNumber, err)
+		return fmt.Errorf("frequencies[%d]: %v", lineNumber, err)
 	}
 
 	return nil
@@ -116,7 +115,7 @@ func (frequencies *Frequencies) ImportCSV() error {
 
 	// Skip the headerline
 	reader := csv.NewReader(bufio.NewReader(csvFile))
-	line, err := reader.Read()
+	_, err = reader.Read()
 	if err != nil {
 		return err
 	}
@@ -132,7 +131,7 @@ func (frequencies *Frequencies) ImportCSV() error {
 	// Read the data
 	// lineNumbers start at 1 and we've done the header
 	lineNumber := 2
-	line, err = reader.Read()
+	line, err := reader.Read()
 	for err == nil {
 		err = frequencies.importCSVLine(lineNumber, line)
 		frequencies.context.LogError(err)

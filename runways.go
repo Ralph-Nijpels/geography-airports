@@ -18,7 +18,7 @@ import (
 // Runways is the representation of the collection of runways. The runways are implemented
 // as an element of the Airport, but it has some methods of it's own.
 type Runways struct {
-	context *application.Context
+	context *application.AppContext
 	parent  *Airports
 }
 
@@ -215,7 +215,7 @@ func (runways *Runways) importCSVLine(lineNumber int, line []string) error {
 		bson.M{"$set": airport})
 
 	if err != nil {
-		return fmt.Errorf("Runways[%d]: %v", lineNumber, err)
+		return fmt.Errorf("runways[%d]: %v", lineNumber, err)
 	}
 
 	return nil
@@ -236,7 +236,7 @@ func (runways *Runways) ImportCSV() error {
 
 	// Skip the headerline
 	reader := csv.NewReader(bufio.NewReader(csvFile))
-	line, err := reader.Read()
+	_, err = reader.Read()
 	if err != nil {
 		return err
 	}
@@ -253,7 +253,7 @@ func (runways *Runways) ImportCSV() error {
 	// Read the data
 	// lineNumbers start at 1 and we've done the header
 	lineNumber := 2
-	line, err = reader.Read()
+	line, err := reader.Read()
 	for err == nil {
 		err = runways.importCSVLine(lineNumber, line)
 		runways.context.LogError(err)

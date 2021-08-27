@@ -23,7 +23,7 @@ import (
 
 // Airports is the representation of the collection of Airports in the geography database
 type Airports struct {
-	context    *application.Context
+	context    *application.AppContext
 	collection *mongo.Collection
 	countries  *countries.Countries
 }
@@ -50,7 +50,7 @@ type Airport struct {
 }
 
 // NewAirports sets up the connection to the database
-func NewAirports(application *application.Context, countries *countries.Countries) *Airports {
+func NewAirports(application *application.AppContext, countries *countries.Countries) *Airports {
 	airports := Airports{
 		context:   application,
 		countries: countries}
@@ -78,7 +78,7 @@ func (airports *Airports) GetByAirportCode(airportCode string) (*Airport, error)
 		bson.D{{Key: "icao-airport-code", Value: parameter}}).Decode(&result)
 
 	if err != nil {
-		return nil, fmt.Errorf("Not Found")
+		return nil, fmt.Errorf("not Found")
 	}
 
 	return &result, nil
@@ -97,7 +97,7 @@ func (airports *Airports) GetByIATACode(iataCode string) (*Airport, error) {
 		bson.D{{Key: "iata-airport-code", Value: parameter}}).Decode(&result)
 
 	if err != nil {
-		return nil, fmt.Errorf("Not Found")
+		return nil, fmt.Errorf("not Found")
 	}
 
 	return &result, nil
@@ -163,7 +163,7 @@ func (airports *Airports) GetList(countryCode string, regionCode string,
 
 	cur, err := airports.collection.Find(airports.context.DBContext, query, findOptions)
 	if err != nil {
-		return nil, fmt.Errorf("Not found")
+		return nil, fmt.Errorf("not found")
 	}
 
 	for cur.Next(airports.context.DBContext) {
@@ -175,11 +175,11 @@ func (airports *Airports) GetList(countryCode string, regionCode string,
 	cur.Close(airports.context.DBContext)
 
 	if int64(len(result)) > airports.context.MaxResults {
-		return nil, fmt.Errorf("Too many results")
+		return nil, fmt.Errorf("too many results")
 	}
 
 	if len(result) == 0 {
-		return nil, fmt.Errorf("Not found")
+		return nil, fmt.Errorf("not found")
 	}
 
 	return result, nil
@@ -331,7 +331,7 @@ func (airports *Airports) ImportCSV() error {
 
 	// Skip the headerline
 	reader := csv.NewReader(bufio.NewReader(csvFile))
-	line, err := reader.Read()
+	_, err = reader.Read()
 	if err != nil {
 		return err
 	}
@@ -341,7 +341,7 @@ func (airports *Airports) ImportCSV() error {
 	// Read the data
 	// Line Numbers start at 1 and we've done the header
 	lineNumber := 2
-	line, err = reader.Read()
+	line, err := reader.Read()
 	for err == nil {
 		err = airports.importCSVLine(lineNumber, line)
 		airports.context.LogError(err)
