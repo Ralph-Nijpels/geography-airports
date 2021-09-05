@@ -1,0 +1,16 @@
+{
+    "source": {
+        "countries-url": "https://ourairports.com/data/countries.csv", 
+        "regions-url": "https://ourairports.com/data/regions.csv",
+        "airports-url": "https://ourairports.com/data/airports.csv",
+        "runways-url": "https://ourairports.com/data/runways.csv", 
+        "frequencies-url": "https://ourairports.com/data/airport-frequencies.csv" 
+    },
+    "storage": {
+        "server": "localhost:9000",
+        "key": "minioadmin",
+        "secret": "minioadmin"
+    },
+    "database": "mongodb://geography-mongo:KpR745tLgS8cyGyn5U3iuyOHM4FNNzVwXU6R5wKxNutHKDnyps5V5Ffn6UgeJxauzoUtxGFnkuumAdU70mtpGA==@geography-mongo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@geography-mongo@",
+    "max-results": 512
+}
